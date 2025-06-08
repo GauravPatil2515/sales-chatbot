@@ -30,7 +30,7 @@ An intelligent sales chatbot that uses natural language processing to query a sa
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/sales-chatbot.git
+   git clone https://github.com/GauravPatil2515/sales-chatbot.git
    cd sales-chatbot
    ```
 
@@ -85,10 +85,19 @@ python main.py
 
 ### Demo Script
 
-Run the demo to see example queries:
+Run the comprehensive demo to see 7 example queries:
 ```bash
-python demo.py
+python comprehensive_demo.py
 ```
+
+This demo will show:
+- "Which product had the highest revenue last week?"
+- "Show me the top 5 customers by total spending"
+- "What are the total sales for each product category?"
+- "How many orders were placed in the last 30 days?"
+- "Which customers from California have made purchases?"
+- "Show me products with stock less than 10 units"
+- "What's the average order value for each month?"
 
 ## 💬 Example Queries
 
@@ -218,7 +227,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Your Name** - *Initial work* - [YourGitHub](https://github.com/yourusername)
+- **Gaurav Patil** - *Initial work* - [GauravPatil2515](https://github.com/GauravPatil2515)
 
 ## 🙏 Acknowledgments
 
@@ -230,9 +239,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or run into issues, please:
 
-1. Check the [Issues](https://github.com/yourusername/sales-chatbot/issues) page
+1. Check the [Issues](https://github.com/GauravPatil2515/sales-chatbot/issues) page
 2. Create a new issue with detailed information
-3. Contact the maintainers
+3. Contact: [GauravPatil2515](https://github.com/GauravPatil2515)
 
 ---
 
