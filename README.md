@@ -3,7 +3,7 @@
 An intelligent sales chatbot that uses natural language processing to query a sales database. The system leverages Groq's LLM API to convert natural language queries into SQL and execute them against a SQLite database containing customers, products, and orders data.
 
 
-Uploading Sales Chatbot - AI Assistant - Google Chrome 2025-06-08 23-52-15.mp4…
+https://github.com/user-attachments/assets/3f4202f8-d4d5-40d1-9f38-384df526268a
 
 
 ## 🚀 Features
