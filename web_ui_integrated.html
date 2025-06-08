@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Chatbot - AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        accent: '#ff7755',
+                        'accent-light': '#ff9977',
+                        'accent-dark': '#e55533',
+                        'sidebar-bg': '#1a1d23',
+                        'sidebar-hover': '#252a31',
+                        'code-bg': '#f8f9fa',
+                        'code-highlight': '#fffbf0',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Main Container -->
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="w-64 bg-sidebar-bg text-white flex flex-col">
+            <!-- Logo/Brand -->
+            <div class="p-6 border-b border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <h1 class="text-lg font-semibold">Sales Assistant</h1>
+                </div>
+            </div>            <!-- Navigation Menu -->
+            <nav class="flex-1 px-4 py-6 space-y-2">
+                <a href="#" id="dashboardBtn" class="flex items-center space-x-3 px-4 py-3 rounded-lg bg-accent text-white transition-colors">
+                    <i class="fas fa-chart-line w-5"></i>
+                    <span>Dashboard</span>
+                </a>                <a href="#" id="databaseBtn" class="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-300 hover:bg-sidebar-hover hover:text-white transition-colors">
+                    <i class="fas fa-database w-5"></i>
+                    <span>Database</span>
+                </a>            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Header -->
+            <header class="bg-white border-b border-gray-200 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <h2 class="text-2xl font-bold text-gray-900">Sales Chatbot</h2>
+                        <span id="statusIndicator" class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                            <i class="fas fa-circle text-green-500 text-xs mr-1"></i>
+                            Online
+                        </span>
+                    </div>
+                    
+                    <!-- Search Bar -->
+                    <div class="flex-1 max-w-lg mx-8">
+                        <div class="relative">
+                            <input type="text"
+                                   placeholder="Search queries..."
+                                   class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Profile & Actions -->
+                    <div class="flex items-center space-x-3">
+                        <button class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100">
+                            <i class="fas fa-bell"></i>
+                        </button>
+                        <div class="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
+                            <span class="text-white text-sm font-medium">GP</span>
+                        </div>
+                    </div>
+                </div>
+            </header>            <!-- Content Area -->
+            <div class="flex-1 p-6 overflow-auto">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section">
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">Total Customers</p>
+                                <p id="totalCustomers" class="text-2xl font-bold text-gray-900">Loading...</p>
+                                <p class="text-green-600 text-sm">↗ Active</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-users text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">Total Revenue</p>
+                                <p id="totalRevenue" class="text-2xl font-bold text-gray-900">Loading...</p>
+                                <p class="text-green-600 text-sm">↗ This month</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-dollar-sign text-green-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">Total Orders</p>
+                                <p id="totalOrders" class="text-2xl font-bold text-gray-900">Loading...</p>
+                                <p class="text-blue-600 text-sm">↗ Completed</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-shopping-cart text-purple-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-gray-600 text-sm">Avg Response Time</p>
+                                <p class="text-2xl font-bold text-gray-900">1.2s</p>
+                                <p class="text-green-600 text-sm">↗ 0.3s faster</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-bolt text-orange-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Query Input Form -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Ask Your Question</h3>
+                    <div class="flex space-x-4">
+                        <div class="flex-1">
+                            <input type="text" 
+                                   id="queryInput"
+                                   placeholder="e.g., What is the total revenue from VIP customers?" 
+                                   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-accent focus:border-transparent text-gray-900 placeholder-gray-500">
+                        </div>
+                        <button onclick="processQuery()" 
+                                id="askButton"
+                                class="px-6 py-3 bg-accent text-white font-medium rounded-lg hover:bg-accent-dark transition-colors flex items-center space-x-2">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Ask</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Quick Examples -->
+                    <div class="mt-4">
+                        <p class="text-sm text-gray-600 mb-2">Try these examples:</p>
+                        <div id="exampleButtons" class="flex flex-wrap gap-2">
+                            <!-- Dynamic example buttons will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Status -->
+                    <div class="mt-4 flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <p id="queryStatus" class="text-green-700">Ready to process your question</p>
+                    </div>
+                </div>
+
+                <!-- Tab Switcher -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="border-b border-gray-200">
+                        <div class="flex">
+                            <button onclick="switchTab('html', event)" 
+                                    class="tab-button px-6 py-3 font-medium border-b-2 border-accent text-accent bg-orange-50">
+                                <i class="fas fa-code mr-2"></i>
+                                HTML Output
+                            </button>
+                            <button onclick="switchTab('sql', event)" 
+                                    class="tab-button px-6 py-3 font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                                <i class="fas fa-database mr-2"></i>
+                                Generated SQL
+                            </button>
+                            <button onclick="switchTab('response', event)" 
+                                    class="tab-button px-6 py-3 font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:bg-gray-50">
+                                <i class="fas fa-chart-bar mr-2"></i>
+                                Response
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content -->
+                    <div class="p-6">
+                        <!-- HTML Tab -->
+                        <div id="html-tab" class="tab-content">
+                            <div class="bg-code-bg border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Generated HTML Table</h4>
+                                    <button onclick="copyToClipboard('htmlOutput')" class="text-sm text-gray-500 hover:text-gray-700 flex items-center space-x-1">
+                                        <i class="fas fa-copy"></i>
+                                        <span>Copy</span>
+                                    </button>
+                                </div>
+                                <div id="htmlOutput" class="overflow-auto max-h-96">
+                                    <div class="text-gray-500 text-center py-8">
+                                        <i class="fas fa-table text-3xl mb-2"></i>
+                                        <p>HTML table output will appear here after running a query</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SQL Tab -->
+                        <div id="sql-tab" class="tab-content hidden">
+                            <div class="bg-code-bg border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">Generated SQL Query</h4>
+                                    <button onclick="copyToClipboard('sqlOutput')" class="text-sm text-gray-500 hover:text-gray-700 flex items-center space-x-1">
+                                        <i class="fas fa-copy"></i>
+                                        <span>Copy</span>
+                                    </button>
+                                </div>
+                                <pre id="sqlOutput" class="bg-gray-800 text-green-400 p-4 rounded-lg overflow-auto max-h-96 text-sm font-mono">
+-- Generated SQL query will appear here
+SELECT 'Run a query to see SQL output' as message;</pre>
+                            </div>
+                        </div>
+
+                        <!-- Response Tab -->
+                        <div id="response-tab" class="tab-content hidden">
+                            <div class="bg-code-bg border border-gray-200 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="font-medium text-gray-900">AI Response</h4>
+                                    <button onclick="copyToClipboard('responseOutput')" class="text-sm text-gray-500 hover:text-gray-700 flex items-center space-x-1">
+                                        <i class="fas fa-copy"></i>
+                                        <span>Copy</span>
+                                    </button>
+                                </div>
+                                <div id="responseOutput" class="overflow-auto max-h-96">
+                                    <div class="text-gray-500 text-center py-8">
+                                        <i class="fas fa-comment-dots text-3xl mb-2"></i>
+                                        <p>AI response will appear here after processing your query</p>
+                                    </div>
+                                </div>
+                            </div>                    </div>
+                </div>
+                </div>
+
+                <!-- Database Section -->
+                <div id="database-section" class="hidden">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-2">Complete Database View</h2>
+                        <p class="text-gray-600">View all data in your sales database</p>
+                    </div>
+
+                    <!-- Database Tables -->
+                    <div class="space-y-6">
+                        <!-- Customers Table -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-users text-blue-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-900">Customers</h3>
+                                            <p class="text-sm text-gray-600" id="customers-count">Loading...</p>
+                                        </div>
+                                    </div>                                    <button onclick="toggleTable('customers')" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                                        <span id="customers-toggle">Hide Table</span>
+                                        <i class="fas fa-chevron-up ml-2" id="customers-icon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="customers-table" class="p-6">
+                                <div class="overflow-x-auto">
+                                    <div id="customers-data" class="text-center py-8 text-gray-500">
+                                        Loading customer data...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Products Table -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-box text-green-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-900">Products</h3>
+                                            <p class="text-sm text-gray-600" id="products-count">Loading...</p>
+                                        </div>
+                                    </div>                                    <button onclick="toggleTable('products')" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                                        <span id="products-toggle">Hide Table</span>
+                                        <i class="fas fa-chevron-up ml-2" id="products-icon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="products-table" class="p-6">
+                                <div class="overflow-x-auto">
+                                    <div id="products-data" class="text-center py-8 text-gray-500">
+                                        Loading product data...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Orders Table -->
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                            <div class="p-6 border-b border-gray-200">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                            <i class="fas fa-shopping-cart text-purple-600"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="text-lg font-semibold text-gray-900">Orders</h3>
+                                            <p class="text-sm text-gray-600" id="orders-count">Loading...</p>
+                                        </div>
+                                    </div>                                    <button onclick="toggleTable('orders')" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                                        <span id="orders-toggle">Hide Table</span>
+                                        <i class="fas fa-chevron-up ml-2" id="orders-icon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="orders-table" class="p-6">
+                                <div class="overflow-x-auto">
+                                    <div id="orders-data" class="text-center py-8 text-gray-500">
+                                        Loading order data...
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                </div>
+            </div>
+        </div>
+    </div>    <script>
+        // Debug: Test if JavaScript is running
+        console.log('JavaScript is running successfully!');
+        
+        // Configuration
+        const API_BASE = window.location.origin;
+
+        // Navigation functionality
+        function showSection(sectionName) {
+            // Hide all sections
+            document.getElementById('dashboard-section').classList.add('hidden');
+            document.getElementById('database-section').classList.add('hidden');
+            
+            // Remove active styling from all nav buttons
+            document.getElementById('dashboardBtn').classList.remove('bg-accent', 'text-white');
+            document.getElementById('dashboardBtn').classList.add('text-gray-300', 'hover:bg-sidebar-hover', 'hover:text-white');
+            
+            document.getElementById('databaseBtn').classList.remove('bg-accent', 'text-white');
+            document.getElementById('databaseBtn').classList.add('text-gray-300', 'hover:bg-sidebar-hover', 'hover:text-white');
+            
+            // Show selected section and activate corresponding nav button
+            if (sectionName === 'dashboard') {
+                document.getElementById('dashboard-section').classList.remove('hidden');
+                document.getElementById('dashboardBtn').classList.remove('text-gray-300', 'hover:bg-sidebar-hover', 'hover:text-white');
+                document.getElementById('dashboardBtn').classList.add('bg-accent', 'text-white');
+            } else if (sectionName === 'database') {
+                document.getElementById('database-section').classList.remove('hidden');
+                document.getElementById('databaseBtn').classList.remove('text-gray-300', 'hover:bg-sidebar-hover', 'hover:text-white');
+                document.getElementById('databaseBtn').classList.add('bg-accent', 'text-white');
+                
+                // Load database data when database section is shown
+                loadDatabaseData();
+            }
+        }
+
+        // Toggle database table visibility
+        function toggleTable(tableName) {
+            const table = document.getElementById(tableName + '-table');
+            const toggle = document.getElementById(tableName + '-toggle');
+            const icon = document.getElementById(tableName + '-icon');
+            
+            if (table.style.display === 'none') {
+                table.style.display = 'block';
+                toggle.textContent = 'Hide Table';
+                icon.className = 'fas fa-chevron-up ml-2';
+            } else {
+                table.style.display = 'none';
+                toggle.textContent = 'Show Table';
+                icon.className = 'fas fa-chevron-down ml-2';
+            }
+        }
+
+        // Load database data
+        async function loadDatabaseData() {
+            try {
+                console.log('Loading database data...');
+                
+                // Show loading state
+                document.getElementById('customers-data').innerHTML = '<div class="text-center py-8 text-gray-500">Loading customer data...</div>';
+                document.getElementById('products-data').innerHTML = '<div class="text-center py-8 text-gray-500">Loading product data...</div>';
+                document.getElementById('orders-data').innerHTML = '<div class="text-center py-8 text-gray-500">Loading order data...</div>';
+                
+                const response = await fetch(`${API_BASE}/api/database`);
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    const data = result.data;
+                    
+                    // Load customers table
+                    if (data.customers) {
+                        displayTable('customers-data', data.customers);
+                        document.getElementById('customers-count').textContent = `${data.customers.count} customers`;
+                    }
+                    
+                    // Load products table
+                    if (data.products) {
+                        displayTable('products-data', data.products);
+                        document.getElementById('products-count').textContent = `${data.products.count} products`;
+                    }
+                    
+                    // Load orders table
+                    if (data.orders) {
+                        displayTable('orders-data', data.orders);
+                        document.getElementById('orders-count').textContent = `${data.orders.count} orders`;
+                    }
+                    
+                    console.log('Database data loaded successfully');
+                } else {
+                    throw new Error(result.error || 'Failed to load database');
+                }
+            } catch (error) {
+                console.error('Error loading database data:', error);
+                  // Show error state
+                const errorMessage = '<div class="text-center py-8 text-red-500">Error loading data</div>';
+                document.getElementById('customers-data').innerHTML = errorMessage;
+                document.getElementById('products-data').innerHTML = errorMessage;
+                document.getElementById('orders-data').innerHTML = errorMessage;
+                
+                showNotification('Error loading database data: ' + error.message, 'error');
+            }
+        }
+
+        // Display table helper function
+        function displayTable(containerId, tableData) {
+            const container = document.getElementById(containerId);
+            
+            if (!tableData || !tableData.data || tableData.data.length === 0) {
+                container.innerHTML = '<div class="text-center py-8 text-gray-500">No data available</div>';
+                return;
+            }
+            
+            const html = `
+                <table class="min-w-full bg-white">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-200">
+                            ${tableData.columns.map(col => 
+                                `<th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">${col}</th>`
+                            ).join('')}
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        ${tableData.data.map((row, index) => `
+                            <tr class="${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}">
+                                ${tableData.columns.map(col => 
+                                    `<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${row[col] || ''}</td>`
+                                ).join('')}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+            
+            container.innerHTML = html;
+        }
+        
+        // Tab switching functionality
+        function switchTab(tabName, event) {
+            try {
+                // Hide all tab contents
+                document.querySelectorAll('.tab-content').forEach(tab => {
+                    tab.classList.add('hidden');
+                });
+                
+                // Remove active styles from all tab buttons
+                document.querySelectorAll('.tab-button').forEach(button => {
+                    button.classList.remove('border-accent', 'text-accent', 'bg-orange-50');
+                    button.classList.add('border-transparent', 'text-gray-500');
+                });
+                
+                // Show selected tab content
+                const targetTab = document.getElementById(tabName + '-tab');
+                if (targetTab) {
+                    targetTab.classList.remove('hidden');
+                }
+                
+                // Style active tab button
+                const activeButton = event ? event.target : document.querySelector(`[onclick*="switchTab('${tabName}')"]`);
+                if (activeButton) {
+                    activeButton.classList.remove('border-transparent', 'text-gray-500');
+                    activeButton.classList.add('border-accent', 'text-accent', 'bg-orange-50');
+                }
+            } catch (error) {
+                console.error('Error switching tabs:', error);
+            }
+        }
+
+        // Set example query
+        function setExample(query) {
+            document.getElementById('queryInput').value = query;
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.textContent || element.innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                // Show success message
+                showNotification('Copied to clipboard!', 'success');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                showNotification('Failed to copy', 'error');
+            });
+        }
+
+        // Show notification
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 px-4 py-2 rounded-lg text-white text-sm z-50 ${
+                type === 'success' ? 'bg-green-500' : 
+                type === 'error' ? 'bg-red-500' : 'bg-blue-500'
+            }`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Process query
+        async function processQuery() {
+            const queryInput = document.getElementById('queryInput');
+            const query = queryInput.value.trim();
+            
+            if (!query) {
+                showNotification('Please enter a query', 'error');
+                return;
+            }
+
+            // Update UI for processing
+            const askButton = document.getElementById('askButton');
+            const statusElement = document.getElementById('queryStatus');
+            
+            askButton.disabled = true;
+            askButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+            statusElement.textContent = 'Processing your question...';
+
+            try {
+                const response = await fetch(`${API_BASE}/api/query`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                const result = await response.json();                if (result.status === 'success') {
+                    // Update HTML output with enhanced table display
+                    const htmlOutput = result.html_output || '<div class="text-gray-500 text-center py-8">No table data available</div>';
+                    
+                    // Enhance the HTML output with better styling
+                    const styledHtml = htmlOutput.replace(
+                        /<table/g, 
+                        '<table class="min-w-full bg-white border border-gray-200 rounded-lg overflow-hidden"'
+                    ).replace(
+                        /<th/g, 
+                        '<th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border-b border-gray-200"'
+                    ).replace(
+                        /<td/g, 
+                        '<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 border-b border-gray-100"'
+                    ).replace(
+                        /<tr/g, 
+                        '<tr class="hover:bg-gray-50 transition-colors"'
+                    );
+                    
+                    document.getElementById('htmlOutput').innerHTML = `
+                        <div class="overflow-x-auto">
+                            ${styledHtml}
+                        </div>
+                        <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                            <div class="flex items-center space-x-2 text-blue-700">
+                                <i class="fas fa-info-circle"></i>
+                                <span class="font-medium">Query Results</span>
+                            </div>
+                            <p class="text-blue-600 text-sm mt-1">
+                                Showing complete results for your query. Use the Database section to view all tables.
+                            </p>
+                        </div>
+                    `;
+                    
+                    // Update SQL output
+                    document.getElementById('sqlOutput').textContent = result.sql_query || 
+                        '-- No SQL query generated';
+                    
+                    // Update response output
+                    document.getElementById('responseOutput').innerHTML = `
+                        <div class="space-y-4">
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                <h5 class="font-medium text-blue-900 mb-2">AI Response</h5>
+                                <p class="text-blue-800">${result.response}</p>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <p class="text-sm text-gray-600">Execution Time</p>
+                                    <p class="font-bold text-lg">${result.execution_time}s</p>
+                                </div>
+                                <div class="bg-gray-50 rounded-lg p-3">
+                                    <p class="text-sm text-gray-600">Timestamp</p>
+                                    <p class="font-bold text-sm">${new Date(result.timestamp).toLocaleString()}</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    statusElement.textContent = 'Query completed successfully!';
+                    showNotification('Query processed successfully!', 'success');
+                } else {
+                    throw new Error(result.error || 'Unknown error occurred');
+                }
+
+            } catch (error) {
+                console.error('Error processing query:', error);
+                statusElement.textContent = 'Error processing query';
+                showNotification('Error: ' + error.message, 'error');
+                
+                // Show error in response tab
+                document.getElementById('responseOutput').innerHTML = `
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <h5 class="font-medium text-red-900 mb-2">Error</h5>
+                        <p class="text-red-800">${error.message}</p>
+                    </div>
+                `;
+            } finally {
+                // Reset button
+                askButton.disabled = false;
+                askButton.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Ask';
+            }
+        }
+
+        // Load statistics
+        async function loadStats() {
+            try {
+                const response = await fetch(`${API_BASE}/api/stats`);
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    const stats = result.stats;
+                    document.getElementById('totalCustomers').textContent = stats.customers.toLocaleString();
+                    document.getElementById('totalRevenue').textContent = '$' + stats.total_revenue.toLocaleString();
+                    document.getElementById('totalOrders').textContent = stats.orders.toLocaleString();
+                }
+            } catch (error) {
+                console.error('Error loading stats:', error);
+                document.getElementById('totalCustomers').textContent = 'Error';
+                document.getElementById('totalRevenue').textContent = 'Error';
+                document.getElementById('totalOrders').textContent = 'Error';
+            }
+        }
+
+        // Load examples
+        async function loadExamples() {
+            try {
+                const response = await fetch(`${API_BASE}/api/examples`);
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    const container = document.getElementById('exampleButtons');
+                    container.innerHTML = result.examples.map(example => 
+                        `<button onclick="setExample('${example}')" 
+                                class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors">
+                            ${example.split(' ').slice(0, 3).join(' ')}...
+                        </button>`
+                    ).join('');
+                }
+            } catch (error) {
+                console.error('Error loading examples:', error);
+            }
+        }        // Handle Enter key in query input
+        document.getElementById('queryInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                processQuery();
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Sales Chatbot UI loaded successfully!');
+            
+            // Initialize tab visibility
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            
+            const htmlTab = document.getElementById('html-tab');
+            if (htmlTab) {
+                htmlTab.classList.remove('hidden');
+            }
+
+            // Add navigation event listeners
+            document.getElementById('dashboardBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('dashboard');
+            });
+              document.getElementById('databaseBtn').addEventListener('click', (e) => {
+                e.preventDefault();
+                showSection('database');
+            });
+
+            // Show dashboard by default
+            showSection('dashboard');
+
+            // Load initial data
+            loadStats();
+            loadExamples();
+
+            // Check server status
+            fetch(`${API_BASE}/api/stats`)
+                .then(() => {
+                    document.getElementById('statusIndicator').innerHTML = 
+                        '<i class="fas fa-circle text-green-500 text-xs mr-1"></i>Online';
+                })
+                .catch(() => {
+                    document.getElementById('statusIndicator').innerHTML = 
+                        '<i class="fas fa-circle text-red-500 text-xs mr-1"></i>Offline';
+                    document.getElementById('statusIndicator').className = 
+                        'bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium';
+                });
+        });
+    </script>
+</body>
+</html>
